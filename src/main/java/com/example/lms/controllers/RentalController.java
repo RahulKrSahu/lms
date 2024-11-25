@@ -57,12 +57,12 @@ public class RentalController {
                     rental.setReturnDate(LocalDate.now()); // Automatically set the return date to today's date
                     rental.setIsReturned(true); // Mark the rental as returned
                     Double rentalFee = rentalService.calculateReturnFee(rental); // Calculate the fee
+                    rental.setFee(rentalFee); // Save the fee in the rental record
                     rentalService.saveRental(rental); // Save the updated rental
                     return ResponseEntity.ok(rentalFee); // Return the calculated fee
                 })
                 .orElse(ResponseEntity.notFound().build()); // If rental not found, return 404
     }
-
 
     @PatchMapping("/{id}/mark-as-lost")
     public ResponseEntity<Double> markAsLost(@PathVariable Long id) {
@@ -70,10 +70,10 @@ public class RentalController {
                 .map(rental -> {
                     rental.setLost(true); // Mark the rental as lost
                     Double lostFee = rentalService.calculateLostFee(rental); // Calculate the lost fee
+                    rental.setFee(lostFee); // Save the fee in the rental record
                     rentalService.saveRental(rental); // Save the updated rental
                     return ResponseEntity.ok(lostFee); // Return the calculated lost fee
                 })
                 .orElse(ResponseEntity.notFound().build()); // If rental not found, return 404
     }
-
 }

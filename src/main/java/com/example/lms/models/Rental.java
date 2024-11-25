@@ -36,4 +36,7 @@ public class Rental {
     private Boolean lost;
 
     private Double price;
+
+    // Add fee column
+    private Double fee;
 }
