@@ -1,0 +1,79 @@
+# Target directories
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Maven Wrapper
+!.mvn/wrapper/maven-wrapper.jar
+
+# Spring Tools Suite (STS)
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Build directories
+/build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Visual Studio Code
+.vscode/
+
+# Logs
+*.log
+*.log.*
+
+# Environment Variables
+.env
+*.env
+
+# Temporary and Backup Files
+*.swp
+*.swo
+*.tmp
+*.bak
+*.orig
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Dependency directories
+/node_modules/
+/bower_components/
+
+# Compiled files
+*.class
+
+# Test and Coverage Outputs
+/test-output/
+/test-results/
+/surefire-reports/
+/coverage/
+/jacoco.exec
+
+# JAR, WAR, EAR files
+*.jar
+*.war
+*.ear
+
+# Docker specific
+*.pid
+/.dockerignore
