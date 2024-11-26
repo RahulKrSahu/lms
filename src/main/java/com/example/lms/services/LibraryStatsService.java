@@ -32,7 +32,7 @@ public class LibraryStatsService {
         stats.put("authors", authorRepository.count());
         stats.put("books", bookRepository.count());
         stats.put("users", userRepository.count());
-        stats.put("rentals", rentalRepository.count());
+        stats.put("rentals", rentalRepository.countByIsReturnedNullAndLostNull());
         return stats;
     }
 }
