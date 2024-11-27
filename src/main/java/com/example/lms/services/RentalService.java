@@ -10,6 +10,12 @@ import java.util.Optional;
 @Service
 public class RentalService {
 
+    private static final double RENTAL_RATE = 1.0; // Standard rate per day
+    private static final double LATE_FEE_RATE = 1.5; // Late fee rate per day
+    private static final double MINIMUM_FEE = 1.0; // Minimum fee for same-day returns
+    private static final double STANDARD_RENTAL_FEE = 30.0; // Fee for lost books (30 days rental fee)
+    private static final double LOST_BOOK_FINE = 15.0; // Additional fine for lost books
+
     private final RentalRepository rentalRepository;
 
     public RentalService(RentalRepository rentalRepository) {
@@ -46,19 +52,9 @@ public class RentalService {
         rentalRepository.deleteById(id);
     }
 
-    // Calculate rental fee for returned books
+// Calculate rental fee for returned books
     public Double calculateReturnFee(Rental rental) {
-        if (rental.getRentalDate() == null || rental.getDueDate() == null || rental.getReturnDate() == null) {
-            throw new IllegalArgumentException("Rental, Due, or Return dates cannot be null.");
-        }
-
-        if (rental.getRentalDate().isAfter(rental.getDueDate()) || rental.getRentalDate().isAfter(rental.getReturnDate())) {
-            throw new IllegalArgumentException("Rental date must be before or equal to Due and Return dates.");
-        }
-
-        final double RENTAL_RATE = 1.0; // Standard rate per day
-        final double LATE_FEE_RATE = 1.5; // Late fee rate per day
-        final double MINIMUM_FEE = 1.0;  // Minimum fee for same-day returns
+        validateRentalDates(rental);
 
         long rentalDays = rental.getReturnDate().toEpochDay() - rental.getRentalDate().toEpochDay();
 
@@ -74,13 +70,22 @@ public class RentalService {
         }
     }
 
-
     // Calculate fee for lost books
     public Double calculateLostFee(Rental rental) {
         if (rental.getBook() == null) {
             throw new IllegalArgumentException("Book details are missing for the rental.");
         }
-        return 30.0 + rental.getBook().getPrice() + 15.0;
+        return STANDARD_RENTAL_FEE + rental.getBook().getPrice() + LOST_BOOK_FINE;
     }
 
+    // Validate rental, due, and return dates
+    private void validateRentalDates(Rental rental) {
+        if (rental.getRentalDate() == null || rental.getDueDate() == null || rental.getReturnDate() == null) {
+            throw new IllegalArgumentException("Rental, Due, or Return dates cannot be null.");
+        }
+
+        if (rental.getRentalDate().isAfter(rental.getDueDate()) || rental.getRentalDate().isAfter(rental.getReturnDate())) {
+            throw new IllegalArgumentException("Rental date must be before or equal to Due and Return dates.");
+        }
+    }
 }
