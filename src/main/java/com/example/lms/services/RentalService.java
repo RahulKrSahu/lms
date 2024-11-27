@@ -51,15 +51,29 @@ public class RentalService {
         if (rental.getRentalDate() == null || rental.getDueDate() == null || rental.getReturnDate() == null) {
             throw new IllegalArgumentException("Rental, Due, or Return dates cannot be null.");
         }
-        if (rental.getReturnDate().isAfter(rental.getDueDate())) {
+
+        if (rental.getRentalDate().isAfter(rental.getDueDate()) || rental.getRentalDate().isAfter(rental.getReturnDate())) {
+            throw new IllegalArgumentException("Rental date must be before or equal to Due and Return dates.");
+        }
+
+        final double RENTAL_RATE = 1.0; // Standard rate per day
+        final double LATE_FEE_RATE = 1.5; // Late fee rate per day
+        final double MINIMUM_FEE = 1.0;  // Minimum fee for same-day returns
+
+        long rentalDays = rental.getReturnDate().toEpochDay() - rental.getRentalDate().toEpochDay();
+
+        if (rentalDays == 0) {
+            // If the book is returned on the same day, charge the minimum fee
+            return MINIMUM_FEE;
+        } else if (rental.getReturnDate().isAfter(rental.getDueDate())) {
             long daysRented = rental.getDueDate().toEpochDay() - rental.getRentalDate().toEpochDay();
             long lateDays = rental.getReturnDate().toEpochDay() - rental.getDueDate().toEpochDay();
-            return (daysRented * 1.0) + (lateDays * 1.5);
+            return (daysRented * RENTAL_RATE) + (lateDays * LATE_FEE_RATE);
         } else {
-            long daysRented = rental.getReturnDate().toEpochDay() - rental.getRentalDate().toEpochDay();
-            return daysRented * 1.0;
+            return rentalDays * RENTAL_RATE;
         }
     }
+
 
     // Calculate fee for lost books
     public Double calculateLostFee(Rental rental) {
